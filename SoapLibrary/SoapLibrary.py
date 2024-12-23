@@ -6,6 +6,7 @@ from .config import DICT_CONFIG
 from requests import Session
 from requests.auth import HTTPBasicAuth
 from zeep import Client
+from zeep.cache import SqliteCache
 from zeep.transports import Transport
 from zeep.wsdl.utils import etree
 from robot.api import logger
@@ -63,7 +64,7 @@ class SoapLibrary:
         session.verify = ssl_verify
         session.cert = client_cert
         session.auth = HTTPBasicAuth(*auth) if auth else None
-        self.client = Client(self.url, transport=Transport(session=session))
+        self.client = Client(self.url, transport=Transport(session=session, cache=SqliteCache()))
         logger.info('Connected to: %s' % self.client.wsdl.location)
         info = self.client.service.__dict__
         operations = info["_operations"]
